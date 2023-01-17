@@ -25,23 +25,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.routes = void 0;
 const app_1 = __importDefault(require("./config/app"));
 const express_1 = __importDefault(require("express"));
 const dotenv = __importStar(require("dotenv"));
+const userRouter_1 = require("./routes/userRouter");
+const mongoose_1 = __importDefault(require("mongoose"));
 // Set Up
 dotenv.config();
 const PORT = process.env.PORT || 3001;
-const path = require('path');
-app_1.default.use(express_1.default.static(path.resolve(__dirname, '../client/build')));
-app_1.default.get('/api', (req, res) => {
-    console.log('Received api request.');
-    res.json({ message: "Hello from Server" });
-});
-// All other GET requests not handled before will return our React app
-app_1.default.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-});
+mongoose_1.default.connect((_a = process.env.DB_CONN_STRING) !== null && _a !== void 0 ? _a : '');
+exports.routes = express_1.default.Router();
+const bodyParser = require('body-parser');
+app_1.default.use(bodyParser.json());
+app_1.default.use('/', exports.routes);
+exports.routes.use(userRouter_1.userRoute);
 app_1.default.listen(PORT, () => {
     console.log(`[server]: Server is running at http://localhost:${PORT}`);
 });

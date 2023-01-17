@@ -3,16 +3,9 @@ import './App.css';
 import React from 'react';
 import { LoginPage } from './pages/loginPage'
 import { SignUpPage } from './pages/signUpPage'
+import axios from 'axios'
 
 function App() {
-  const [data, setData] = React.useState(null);
-
-  React.useEffect(() => {
-    fetch("/api")
-    .then((res) => res.json())
-    .then((data) => setData(data.message));
-  }, []);
-
 
   return (
     <div>

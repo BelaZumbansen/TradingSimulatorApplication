@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 
 export function LoginPage() {
@@ -11,6 +12,16 @@ export function LoginPage() {
 
   const handleLogin = (event) => {
     event.preventDefault();
+
+    axios.post('/users/login', {
+      email: email,
+      password: password
+    })
+    .then((response) => {
+      console.log(response);
+    }, (err) => {
+      console.log(err);
+    });
   }
 
   return (

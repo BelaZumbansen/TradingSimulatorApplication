@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 
 export function SignUpPage() {
@@ -16,6 +17,19 @@ export function SignUpPage() {
 
   const handleSignUp = (event) => {
     event.preventDefault();
+
+    axios.post('/users/signUp', {
+      name: name,
+      dateOfBirth: dateOfBirth,
+      email: email,
+      password: password
+    })    
+    .then((response) => {
+      // Set current state and move to user homepage
+      console.log(response);
+    }, (err) => {
+      console.log(err);
+    });
   }
   
   return (
