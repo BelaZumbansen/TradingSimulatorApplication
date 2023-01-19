@@ -1,16 +1,57 @@
 import React from 'react'
 import { isLoggedIn } from '../services/authenticator'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
+import Async from 'react-async'
+import axios from 'axios'
 
-export default function UserDashboard() {
+const loggedIn = async () => {
 
-  if (!isLoggedIn()) {
-    return (<Navigate to='/login' />);
+  return isLoggedIn() 
+    .then(res => res);
+}
+
+export const UserDashboard = () => {
+
+  const navigate = useNavigate();
+
+  function handleLogoutRequest(event) {
+    event.preventDefault();
+    
+    axios.post('/api/auth/logout', {}, {
+      withCredentials: true,
+    })
+    .then((response) => {
+
+      if (response.status === 200) {
+        localStorage.clear();
+        navigate('/login');
+      }
+    }, (err) => {
+      console.log(err);
+    });
   }
 
   return (
-    <div>
-      <p>Logged In.</p>
-    </div>
+
+    <Async promiseFn={loggedIn}>
+      {({data, error, isLoading}) => {
+
+        if (isLoading) return 'Loading...';
+        if (error) {
+          return (<Navigate to='/login' />);
+        }
+        if (data) {
+
+          return (
+            <div>
+              <p>Logged In.</p>
+              <form onSubmit={handleLogoutRequest}>
+                <button type="submit">Log Out</button>
+              </form>
+            </div>
+          )
+        }
+      }} 
+    </Async> 
   )
-};
+}

@@ -12,10 +12,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginHandler = void 0;
+exports.loginHandler = exports.logoutHandler = void 0;
 const user_1 = require("../../services/user");
 const password_1 = require("../../services/password");
 const appError_1 = __importDefault(require("../../services/appError"));
+const logoutHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        res.clearCookie('accessToken').clearCookie('refreshToken');
+        res.status(200).send();
+    }
+    catch (err) {
+        res.status(200).send();
+    }
+});
+exports.logoutHandler = logoutHandler;
 const loginHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const loginCredentials = {

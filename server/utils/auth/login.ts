@@ -3,6 +3,19 @@ import { LoginCredentials, findUser, signToken } from '../../services/user'
 import { comparePassword } from '../../services/password';
 import AppError from '../../services/appError'
 
+export const logoutHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction) => {
+
+    try {
+      res.clearCookie('accessToken').clearCookie('refreshToken');
+      res.status(200).send();
+    } catch(err : any) {
+      res.status(200).send();
+    }
+  }
+
 export const loginHandler = async (
   req: Request, 
   res: Response,

@@ -1,17 +1,13 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom'
-import { isLoggedIn } from '../services/authenticator';
+import { useNavigate } from 'react-router-dom'
 
 export function LoginPage() {
 
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  if (isLoggedIn()) {
-    return (<Navigate to='/home' />);
-  }
+  const [errorMessage, setError] = useState('');
 
   function validate() {
     return email.length > 0 && email.includes('@') && password.length >= 8;
@@ -38,9 +34,12 @@ export function LoginPage() {
 
         localStorage.setItem('user', response.data.user);
         navigate('/home');
+      } else {
+        setError('Invalid Email or Password');
       }
     }, (err) => {
       console.log(err);
+      setError('Invalid Email or Password');
     });
   }
 
@@ -54,7 +53,10 @@ export function LoginPage() {
           type="text"
           value={email}
           name="Email"
-          onChange={({ target }) => setEmail(target.value)}
+          onChange={({ target }) =>  {
+            setEmail(target.value);
+            setError('')}
+          }
           />
         </div>
         <div>
@@ -63,7 +65,10 @@ export function LoginPage() {
             type="password"
             value={password}
             name="Password"
-            onChange={({ target }) => setPassword(target.value)}
+            onChange={({ target }) => {
+              setPassword(target.value)
+              setError('')}
+            }
           />
         </div>
         <button type="submit" disabled={!validate()}>Login</button>
@@ -71,6 +76,7 @@ export function LoginPage() {
       <form onSubmit={handleRegisterRequest}>
         <button type="submit">Sign Up</button>
       </form>
+      <p>{errorMessage}</p>
     </div>
   )
 }

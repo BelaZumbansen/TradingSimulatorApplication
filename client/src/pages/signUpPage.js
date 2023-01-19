@@ -1,7 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react'
-import { isLoggedIn } from '../services/authenticator';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export function SignUpPage() {
 
@@ -12,10 +11,7 @@ export function SignUpPage() {
   const [confirmEmail, setConfirmEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
-  if (isLoggedIn()) {
-    return (<Navigate to='/home' />);
-  }
+  const [errorMessage, setError] = useState('');
 
   function handleLoginRequest(event) {
     event.preventDefault();
@@ -41,10 +37,14 @@ export function SignUpPage() {
     })    
     .then((response) => {
       // Set current state and move to user homepage
-      console.log(response);
-      
+      if (response.status === 200) {
+        navigate('/home');
+      } else {
+        setError('User with this email already exists.');
+      }
     }, (err) => {
       console.log(err);
+      setError('User with this email already exists.');
     });
   }
   
@@ -76,7 +76,10 @@ export function SignUpPage() {
           type="text"
           value={email}
           name="Email"
-          onChange={({ target }) => setEmail(target.value)}
+          onChange={({ target }) => {
+            setEmail(target.value);
+            setError('')}
+          }
           />
         </div>
         <div>
@@ -111,6 +114,7 @@ export function SignUpPage() {
       <form onSubmit={handleLoginRequest}>
         <button type="submit">Log In</button>
       </form>
+      <p>{errorMessage}</p>
     </div>
   )
 }

@@ -13,8 +13,10 @@ mongoose.set('strictQuery', true);
 
 export const routes = express.Router();
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use('/', routes);
 routes.use(authRoute)
 

@@ -18,9 +18,7 @@ const user_1 = require("../../services/user");
 const jwt_1 = require("./jwt");
 const persistentLoginHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(req);
         const auth = req.cookies['accessToken'];
-        console.log(auth);
         if (!auth) {
             return next(new appError_1.default('Missing Authorization Token', 401));
         }

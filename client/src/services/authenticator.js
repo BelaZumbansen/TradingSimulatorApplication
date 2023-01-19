@@ -1,39 +1,52 @@
 import axios from 'axios';
 
-export const isLoggedIn = () => {
+export const loggedIn = async () => {
+  
+  const response = await isLoggedIn();
 
-  axios.get('/api/auth/persistentLogin',
+  if (
+    ! response || 
+    !(response instanceof Response)) {
+    
+    localStorage.clear();
+    return false;
+  }
+
+  if (response.status === 200) {
+    localStorage.setItem('user', response.data);
+    return true;
+  } else {
+    localStorage.clear();
+    return false;
+  }
+}
+
+export const isLoggedIn = async () => {
+
+  return await axios.get('/api/auth/persistentLogin',
   {
     withCredentials: true,
   })
-    .then((response) => {
+    .then(async (response) => {
       if (response.status === 200) {
-        
-        console.log('User logged in.');
-        localStorage.setItem('user', response.data);
-        return true;
+        return response;
       } else if (response.status === 401) {
 
         console.log('Access token expired or nonexistent.');
         
-        if (attemptRefresh(true)) {
-          console.log('User Logged in.');
-          return true;
-        }
+        const res = await attemptRefresh();
+        return res;
       } else {
-
         console.log('Unforeseen problem occured.');
-        localStorage.clear();
-        return true;
       }
+      return response;
     }, (err) => {
       console.log(err);
-      localStorage.clear();
-      return false;
+      return err
     });
 }
 
-export const attemptRefresh = (updateUser) => {
+const attemptRefresh = async () => {
 
   axios.get('/api/auth/refresh',
   {
@@ -44,23 +57,16 @@ export const attemptRefresh = (updateUser) => {
       // Refresh token valid and not expired
       // Cookies are updated
       if (response.status === 200) {
-        
-        if (updateUser) {
-          localStorage.setItem('user', response.data);
-        }
-        return true;
+        return response;
       }
       else if (response.status === 401) {
         console.log('Entirely logged out.');
-        return false;
       } else {
         console.log('Unforeseen error encountered.');
-        localStorage.clear();
-        return false;
       }
+      return response;
     }, (err) => {
       console.log(err);
-      localStorage.clear();
-      return false;
+      return null;
     }); 
 }

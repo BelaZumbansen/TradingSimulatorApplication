@@ -40,7 +40,9 @@ mongoose_1.default.connect((_a = process.env.MONGODB_URI) !== null && _a !== voi
 mongoose_1.default.set('strictQuery', true);
 exports.routes = express_1.default.Router();
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 app_1.default.use(bodyParser.json());
+app_1.default.use(cookieParser());
 app_1.default.use('/', exports.routes);
 exports.routes.use(authRouter_1.authRoute);
 app_1.default.listen(PORT, () => {

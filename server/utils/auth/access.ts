@@ -12,10 +12,7 @@ export const persistentLoginHandler = async (
 
     try {
 
-      console.log(req);
       const auth = req.cookies['accessToken'];
-
-      console.log(auth);
 
       if (!auth) {
         return next(new AppError('Missing Authorization Token', 401));
