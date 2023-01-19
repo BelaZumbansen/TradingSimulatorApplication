@@ -1,14 +1,26 @@
 import axios from 'axios';
 import React, { useState } from 'react'
+import { isLoggedIn } from '../services/authenticator';
+import { useNavigate, Navigate } from 'react-router-dom';
 
 export function SignUpPage() {
 
-  const [name, setName] = useState('')
+  const navigate = useNavigate();
+  const [name, setName] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [email, setEmail] = useState('');
   const [confirmEmail, setConfirmEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  if (isLoggedIn()) {
+    return (<Navigate to='/home' />);
+  }
+
+  function handleLoginRequest(event) {
+    event.preventDefault();
+    navigate('/login');
+  }
 
   function validate() {
     return email.length > 0 && email.includes('@') && email === confirmEmail
@@ -18,15 +30,19 @@ export function SignUpPage() {
   const handleSignUp = (event) => {
     event.preventDefault();
 
-    axios.post('/users/signUp', {
+    axios.post('/api/auth/signUp', {
       name: name,
       dateOfBirth: dateOfBirth,
       email: email,
       password: password
+    },
+    {
+      withCredentials: true,
     })    
     .then((response) => {
       // Set current state and move to user homepage
       console.log(response);
+      
     }, (err) => {
       console.log(err);
     });
@@ -91,6 +107,9 @@ export function SignUpPage() {
           />
         </div>
         <button type="submit" disabled={!validate()}>Sign Up</button>
+      </form>
+      <form onSubmit={handleLoginRequest}>
+        <button type="submit">Log In</button>
       </form>
     </div>
   )
