@@ -3,19 +3,18 @@ import { LoginCredentials, findUser, signToken } from '../../services/user'
 import { comparePassword } from '../../services/password';
 import AppError from '../../services/appError'
 
+// Handle Logout API Request
 export const logoutHandler = async (
   req: Request,
   res: Response,
   next: NextFunction) => {
-
-    try {
-      res.clearCookie('accessToken').clearCookie('refreshToken');
-      res.status(200).send();
-    } catch(err : any) {
-      res.status(200).send();
-    }
+    
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.json({message : 'Logged Out'});
   }
 
+// Handle Login API Request
 export const loginHandler = async (
   req: Request, 
   res: Response,
@@ -23,34 +22,29 @@ export const loginHandler = async (
 
   try {
 
-    const loginCredentials : LoginCredentials = {
-      email: req.body.email,
-      password: req.body.password,
-    };
+    // Parse Fields
+    const email = req.body.email;
+    const password = req.body.password;
 
-    const user = await findUser(loginCredentials.email);
+    const user = await findUser(email);
 
+    // Check credentials
     if (
       !user ||
-      !(await comparePassword(loginCredentials.password, user.hashPass))
+      !(await comparePassword(password, user.hashPass))
       ) {
         return next(new AppError('Invalid email or password', 401));
     }
 
+    // Generate an Access Token and a Refresh Token
     const { accessToken, refreshToken } = await signToken(user);
 
-    // Send Response
+    // Configure Response with Authentication Tokens
     res
     .status(200)
-    .cookie('accessToken', accessToken, {
-      httpOnly: true,
-    })
-    .cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-    })
-    .json({
-      user: user
-    }); 
+    .cookie('accessToken', accessToken, { httpOnly: true })
+    .cookie('refreshToken', refreshToken, { httpOnly: true })
+    .json({ user: user }); 
   } catch (err : any) {
     next(err);
   }

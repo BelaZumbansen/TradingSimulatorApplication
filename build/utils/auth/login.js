@@ -16,40 +16,33 @@ exports.loginHandler = exports.logoutHandler = void 0;
 const user_1 = require("../../services/user");
 const password_1 = require("../../services/password");
 const appError_1 = __importDefault(require("../../services/appError"));
+// Handle Logout API Request
 const logoutHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        res.clearCookie('accessToken').clearCookie('refreshToken');
-        res.status(200).send();
-    }
-    catch (err) {
-        res.status(200).send();
-    }
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.json({ message: 'Logged Out' });
 });
 exports.logoutHandler = logoutHandler;
+// Handle Login API Request
 const loginHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const loginCredentials = {
-            email: req.body.email,
-            password: req.body.password,
-        };
-        const user = yield (0, user_1.findUser)(loginCredentials.email);
+        // Parse Fields
+        const email = req.body.email;
+        const password = req.body.password;
+        const user = yield (0, user_1.findUser)(email);
+        // Check credentials
         if (!user ||
-            !(yield (0, password_1.comparePassword)(loginCredentials.password, user.hashPass))) {
+            !(yield (0, password_1.comparePassword)(password, user.hashPass))) {
             return next(new appError_1.default('Invalid email or password', 401));
         }
+        // Generate an Access Token and a Refresh Token
         const { accessToken, refreshToken } = yield (0, user_1.signToken)(user);
-        // Send Response
+        // Configure Response with Authentication Tokens
         res
             .status(200)
-            .cookie('accessToken', accessToken, {
-            httpOnly: true,
-        })
-            .cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-        })
-            .json({
-            user: user
-        });
+            .cookie('accessToken', accessToken, { httpOnly: true })
+            .cookie('refreshToken', refreshToken, { httpOnly: true })
+            .json({ user: user });
     }
     catch (err) {
         next(err);

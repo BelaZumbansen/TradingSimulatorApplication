@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import '../styles/login.css'
 
 export function LoginPage() {
 
@@ -8,6 +9,10 @@ export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setError] = useState('');
+
+  if (localStorage.getItem('user')) {
+    navigate('/home');
+  }
 
   function validate() {
     return email.length > 0 && email.includes('@') && password.length >= 8;
@@ -44,15 +49,17 @@ export function LoginPage() {
   }
 
   return (
-    <div className="Login">
-      <h1>Login Page</h1>
-      <form onSubmit={handleLogin}>
+    <div>
+      <form onSubmit={handleLogin} className='loginForm'>
+        <h1>Sign In</h1>
         <div>
-          Email
+          Username
           <input
           type="text"
           value={email}
           name="Email"
+          className='loginCredential'
+          placeholder='Email'
           onChange={({ target }) =>  {
             setEmail(target.value);
             setError('')}
@@ -65,6 +72,8 @@ export function LoginPage() {
             type="password"
             value={password}
             name="Password"
+            className='loginCredential'
+            placeholder='Password'
             onChange={({ target }) => {
               setPassword(target.value)
               setError('')}
@@ -73,9 +82,9 @@ export function LoginPage() {
         </div>
         <button type="submit" disabled={!validate()}>Login</button>
       </form>
-      <form onSubmit={handleRegisterRequest}>
-        <button type="submit">Sign Up</button>
-      </form>
+      <div className='createAccount'>
+        <h3 onClick={handleRegisterRequest}>Create Account</h3>
+      </div>
       <p>{errorMessage}</p>
     </div>
   )

@@ -3,8 +3,8 @@ import AppError from '../../services/appError';
 import { findUser } from '../../services/user';
 import { verifyJwt } from './jwt';
 import jwt from 'jsonwebtoken'
-import { signToken } from '../../services/user';
 
+// Receive a Peristent Login Request
 export const persistentLoginHandler = async (
   req: Request,
   res: Response,

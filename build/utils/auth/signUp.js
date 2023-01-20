@@ -15,29 +15,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerHandler = void 0;
 const user_1 = require("../../services/user");
 const appError_1 = __importDefault(require("../../services/appError"));
+// Handle Register Request
 const registerHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Parse Request Payload
         const createCredentials = {
             name: req.body.name,
             dateOfBirth: req.body.dateOfBirth,
             email: req.body.email,
             password: req.body.password,
         };
+        // Attempt to create a new User
         const user = yield (0, user_1.createUser)(createCredentials);
         if (!user) {
             return next(new appError_1.default('User with this email already exists.', 401));
         }
+        // Generate an Access Token and Refresh Token for this User Session
         const { accessToken, refreshToken } = yield (0, user_1.signToken)(user);
-        // Send Response
+        // Send Response with Tokens
         res
             .status(200)
-            .cookie('accessToken', accessToken, {
-            httpOnly: true,
-        })
-            .cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-        })
-            .json({ message: 'Registered Successfully' });
+            .cookie('accessToken', accessToken, { httpOnly: true })
+            .cookie('refreshToken', refreshToken, { httpOnly: true })
+            .json({ user: user });
     }
     catch (err) {
         next(err);

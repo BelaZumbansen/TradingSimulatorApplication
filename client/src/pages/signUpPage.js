@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import '../styles/signUp.css'
 
 export function SignUpPage() {
 
@@ -12,6 +13,10 @@ export function SignUpPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setError] = useState('');
+
+  if (localStorage.getItem('user')) {
+    navigate('/home');
+  }
 
   function handleLoginRequest(event) {
     event.preventDefault();
@@ -50,25 +55,29 @@ export function SignUpPage() {
   
   return (
     <div className="SignUp">
-      <h1>SignUp Page</h1>
-      <form onSubmit={handleSignUp}>
-      <div>
+      <form onSubmit={handleSignUp} className='signUpForm'>
+        <h1>Create Account</h1>
+        <div>
           Full Name
           <input
           type="text"
           value={name}
           name="Name"
+          className='signInCredential'
+          placeholder='Full Name'
           onChange={({ target }) => setName(target.value)}
           />
         </div>
         <div>
-          Date of Birth
-          <input
-          type="date"
+          Date Of Birth
+          <input 
+          type="text" 
           value={dateOfBirth}
-          name="Date of Birth"
-          onChange={({ target }) => setDateOfBirth(target.value)}
-          />
+          placeholder="MM/DD/YYYY"
+          onfocus="(this.type='date')"
+          onblur="(this.type='text')"
+          className='signInCredential'
+          onChange={({ target }) => setDateOfBirth(target.value)}/>
         </div>
         <div>
           Email
@@ -76,6 +85,8 @@ export function SignUpPage() {
           type="text"
           value={email}
           name="Email"
+          className='signInCredential'
+          placeholder='Email'
           onChange={({ target }) => {
             setEmail(target.value);
             setError('')}
@@ -88,6 +99,8 @@ export function SignUpPage() {
           type="text"
           value={confirmEmail}
           name="Confirm Email"
+          className='signInCredential'
+          placeholder='Re-Type Email'
           onChange={({ target }) => setConfirmEmail(target.value)}
           />
         </div>
@@ -97,6 +110,8 @@ export function SignUpPage() {
             type="password"
             value={password}
             name="Password"
+            className='signInCredential'
+            placeholder='Password'
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
@@ -106,14 +121,16 @@ export function SignUpPage() {
             type="password"
             value={confirmPassword}
             name="Confirm Password"
+            className='signInCredential'
+            placeholder='Re-Type Password'
             onChange={({ target }) => setConfirmPassword(target.value)}
           />
         </div>
         <button type="submit" disabled={!validate()}>Sign Up</button>
       </form>
-      <form onSubmit={handleLoginRequest}>
-        <button type="submit">Log In</button>
-      </form>
+      <div className='signIn'>
+        <h3 onClick={handleLoginRequest}>Sign In</h3>
+      </div>
       <p>{errorMessage}</p>
     </div>
   )

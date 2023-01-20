@@ -16,6 +16,7 @@ exports.authorizeAPICall = exports.persistentLoginHandler = void 0;
 const appError_1 = __importDefault(require("../../services/appError"));
 const user_1 = require("../../services/user");
 const jwt_1 = require("./jwt");
+// Receive a Peristent Login Request
 const persistentLoginHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const auth = req.cookies['accessToken'];

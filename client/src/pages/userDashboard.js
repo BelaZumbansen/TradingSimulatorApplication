@@ -1,18 +1,14 @@
 import React from 'react'
-import { isLoggedIn } from '../services/authenticator'
-import { Navigate, useNavigate } from 'react-router-dom'
-import Async from 'react-async'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-
-const loggedIn = async () => {
-
-  return isLoggedIn() 
-    .then(res => res);
-}
 
 export const UserDashboard = () => {
 
   const navigate = useNavigate();
+
+  if (!localStorage.getItem('user')) {
+    navigate('/home');
+  }
 
   function handleLogoutRequest(event) {
     event.preventDefault();
@@ -27,31 +23,17 @@ export const UserDashboard = () => {
         navigate('/login');
       }
     }, (err) => {
+      localStorage.clear();
       console.log(err);
     });
   }
 
   return (
-
-    <Async promiseFn={loggedIn}>
-      {({data, error, isLoading}) => {
-
-        if (isLoading) return 'Loading...';
-        if (error) {
-          return (<Navigate to='/login' />);
-        }
-        if (data) {
-
-          return (
-            <div>
-              <p>Logged In.</p>
-              <form onSubmit={handleLogoutRequest}>
-                <button type="submit">Log Out</button>
-              </form>
-            </div>
-          )
-        }
-      }} 
-    </Async> 
+    <div>
+      <p>Logged In.</p>
+      <form onSubmit={handleLogoutRequest}>
+        <button type="submit">Log Out</button>
+      </form>
+    </div>
   )
 }

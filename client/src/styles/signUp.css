@@ -1,0 +1,49 @@
+.signUpForm {
+  width: 300px;
+  margin: auto;
+  align-items: center; 
+}
+
+.signUpForm > h1 {
+  text-align: center;
+}
+
+.signIn {
+  width: 300px;
+  margin: auto;
+  text-align: center;
+}
+
+.signIn > h3 {
+  color: grey;
+}
+
+.signIn > h3:hover{
+  cursor: pointer;
+  color: darkgray;
+}
+
+.signInCredential {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 1px;
+  box-sizing: border-box;
+}
+
+.signUpForm > button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* Add a hover effect for buttons */
+.signUpForm > button:hover {
+  opacity: 0.8;
+}

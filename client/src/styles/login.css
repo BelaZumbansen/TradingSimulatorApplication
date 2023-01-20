@@ -1,0 +1,50 @@
+.loginForm {
+  width: 300px;
+  margin: auto;
+  align-items: center;
+}
+
+.loginForm > h1 {
+  text-align: center;
+}
+
+.createAccount {
+  width: 300px;
+  margin: auto;
+  text-align: center;
+}
+
+.createAccount > h3 {
+  color: grey;
+}
+
+.createAccount > h3:hover{
+  cursor: pointer;
+  color: darkgray;
+}
+
+.loginCredential {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 1px;
+  box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+.loginForm > button {
+  background-color: #04AA6D;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* Add a hover effect for buttons */
+.loginForm > button:hover {
+  opacity: 0.8;
+}
