@@ -8,10 +8,12 @@ export function LoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setError] = useState('');
+  const [error, setError] = useState('');
 
-  if (localStorage.getItem('user')) {
+  if (localStorage.getItem('userEmail')) {
     navigate('/home');
+  } else {
+    localStorage.clear();
   }
 
   function validate() {
@@ -36,15 +38,19 @@ export function LoginPage() {
     .then((response) => {
       console.log(response);
       if (response.status === 200) {
-
-        localStorage.setItem('user', response.data.user);
+        
+        setError(false);
+        const user = response.data.user;
+        localStorage.setItem('userEmail', user.email);
+        localStorage.setItem('userName', user.name);
+        localStorage.setItem('dateOfBirth', user.dateOfBirth);
         navigate('/home');
       } else {
-        setError('Invalid Email or Password');
+        setError(true);
       }
     }, (err) => {
       console.log(err);
-      setError('Invalid Email or Password');
+      setError(true);
     });
   }
 
@@ -52,6 +58,9 @@ export function LoginPage() {
     <div>
       <form onSubmit={handleLogin} className='loginForm'>
         <h1>Sign In</h1>
+        <div className='errorBox' style={{display: error ? 'block' : 'none'}}>
+          <p>Your username or password may be incorrect.</p>
+        </div>
         <div>
           Username
           <input
@@ -61,8 +70,7 @@ export function LoginPage() {
           className='loginCredential'
           placeholder='Email'
           onChange={({ target }) =>  {
-            setEmail(target.value);
-            setError('')}
+            setEmail(target.value)}
           }
           />
         </div>
@@ -75,8 +83,7 @@ export function LoginPage() {
             className='loginCredential'
             placeholder='Password'
             onChange={({ target }) => {
-              setPassword(target.value)
-              setError('')}
+              setPassword(target.value)}
             }
           />
         </div>
@@ -85,7 +92,6 @@ export function LoginPage() {
       <div className='createAccount'>
         <h3 onClick={handleRegisterRequest}>Create Account</h3>
       </div>
-      <p>{errorMessage}</p>
     </div>
   )
 }

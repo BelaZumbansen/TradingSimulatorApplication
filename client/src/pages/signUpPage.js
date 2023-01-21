@@ -12,10 +12,12 @@ export function SignUpPage() {
   const [confirmEmail, setConfirmEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorMessage, setError] = useState('');
+  const [error, setError] = useState('');
 
-  if (localStorage.getItem('user')) {
+  if (localStorage.getItem('userEmail')) {
     navigate('/home');
+  } else {
+    localStorage.clear();
   }
 
   function handleLoginRequest(event) {
@@ -43,13 +45,18 @@ export function SignUpPage() {
     .then((response) => {
       // Set current state and move to user homepage
       if (response.status === 200) {
+        setError(false)
+        const user = response.data.user;
+        localStorage.setItem('userEmail', user.email);
+        localStorage.setItem('userName', user.name);
+        localStorage.setItem('dateOfBirth', user.dateOfBirth);
         navigate('/home');
       } else {
-        setError('User with this email already exists.');
+        setError(true);
       }
     }, (err) => {
       console.log(err);
-      setError('User with this email already exists.');
+      setError(true);
     });
   }
   
@@ -57,6 +64,9 @@ export function SignUpPage() {
     <div className="SignUp">
       <form onSubmit={handleSignUp} className='signUpForm'>
         <h1>Create Account</h1>
+        <div className='errorBox' style={{display: error ? 'block' : 'none'}}>
+          <p>User with this email already exists.</p>
+        </div>
         <div>
           Full Name
           <input
@@ -71,11 +81,8 @@ export function SignUpPage() {
         <div>
           Date Of Birth
           <input 
-          type="text" 
+          type="date" 
           value={dateOfBirth}
-          placeholder="MM/DD/YYYY"
-          onfocus="(this.type='date')"
-          onblur="(this.type='text')"
           className='signInCredential'
           onChange={({ target }) => setDateOfBirth(target.value)}/>
         </div>
@@ -131,7 +138,6 @@ export function SignUpPage() {
       <div className='signIn'>
         <h3 onClick={handleLoginRequest}>Sign In</h3>
       </div>
-      <p>{errorMessage}</p>
     </div>
   )
 }

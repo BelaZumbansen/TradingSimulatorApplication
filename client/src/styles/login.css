@@ -35,16 +35,30 @@
 
 /* Set a style for all buttons */
 .loginForm > button {
-  background-color: #04AA6D;
-  color: white;
   padding: 14px 20px;
   margin: 8px 0;
-  border: none;
-  cursor: pointer;
+  border: 1px solid #ccc;
   width: 100%;
 }
 
+.loginForm > button:disabled {
+  background-color: white;
+  color: #ccc;
+}
+
+.loginForm > button:enabled {
+  color: white;
+  background-color: #04AA6D;
+}
+
+
 /* Add a hover effect for buttons */
-.loginForm > button:hover {
+.loginForm > button:hover:enabled {
   opacity: 0.8;
+  cursor: pointer;
+}
+
+.errorBox {
+  color: rgb(239, 12, 12);
+  text-align: center;
 }
