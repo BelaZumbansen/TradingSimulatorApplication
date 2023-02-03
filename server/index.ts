@@ -1,26 +1,26 @@
-import app from './config/app'
+import app from './config/app';
 import express, {Express, Request, Response} from 'express'
 import * as dotenv from 'dotenv'
+import { authRoute } from './routes/authRouter'
+import mongoose from 'mongoose';
 
 // Set Up
 dotenv.config();
 
 const PORT = process.env.PORT || 3001;
+mongoose.connect(process.env.MONGODB_URI ?? '');
+mongoose.set('strictQuery', true);
 
-const path = require('path');
+export const routes = express.Router();
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
-app.use(express.static(path.resolve(__dirname, '../client/build')))
-
-app.get('/api', (req: Request, res: Response) => {
-  console.log('Received api request.');
-  res.json({ message : "Hello from Server" });
-});
-
-// All other GET requests not handled before will return our React app
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
-});
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use('/', routes);
+routes.use(authRoute)
 
 app.listen(PORT, () => {
   console.log(`[server]: Server is running at http://localhost:${PORT}`);
 });
+
