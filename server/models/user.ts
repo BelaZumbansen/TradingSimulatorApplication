@@ -4,6 +4,9 @@ export interface IUser extends Document {
   name: string;
   dateOfBirth: Date,
   email: string;
+  portfolioId: string;
+  logId: string;
+  balance: number,
   password: string;
 }
 
@@ -26,6 +29,21 @@ const UserSchema : Schema = new Schema({
     maxLength: 255, 
     unique: true
   },
+  portfolioId: {
+    type: String,
+    required: true,
+    minLength: 8,
+    maxLength: 255
+  },
+  logId: {
+    type: String,
+    required: true,
+    minLength: 8,
+    maxLength: 255
+  },
+  balance: {
+    type: Number
+  },
   password: {
     type: String,
     required: true,
@@ -44,13 +62,19 @@ export class User {
   dateOfBirth: Date;
   name: string;
   email: string;
-  hashPass: string
+  portfolioId: string;
+  logId: string;
+  balance: number;
+  hashPass: string;
 
   constructor(userDoc : IUser) {
 
     this.name = userDoc.name;
     this.email = userDoc.email;
     this.dateOfBirth = userDoc.dateOfBirth;
+    this.portfolioId = userDoc.portfolioId;
+    this.logId = userDoc.logId;
+    this.balance = userDoc.balance;
     this.hashPass = userDoc.password;
   }
 }

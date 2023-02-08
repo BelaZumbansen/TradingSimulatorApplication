@@ -2,6 +2,8 @@ import bcrypt from 'bcrypt'
 import { model, Schema, Model, Document } from 'mongoose'
 import { UserModel, User, IUser } from '../models/user'
 import * as password_service from './password'
+import * as portfolio_service from './portfolio'
+import * as log_service from './transactionLog'
 import { signJwt } from '../utils/auth/jwt'
 const config = require('../config');
 
@@ -27,11 +29,16 @@ export const createUser = async (input : CreateUserCredentials) => {
   }
 
   const hashVal = await password_service.hashPassword(input.password);
-  
+  const portfolioId = await portfolio_service.createPortfolio(input.email);
+  const logId = await log_service.createTransactionLog(input.email);
+
   const userDoc = new UserModel({
     name: input.name,
     dateOfBirth: input.dateOfBirth,
     email: input.email,
+    portfolioId: portfolioId,
+    logId: logId,
+    balance: 0,
     password: hashVal
   });
 
@@ -47,6 +54,40 @@ export const findUser = async (email : string) => {
   if (!userDoc) {
     return null;
   }
+
+  return new User(userDoc);
+}
+
+export const loadFunds = async (email : string, funds : number) => {
+
+  const userDoc = await UserModel.findOne({email : email});
+
+  if (!userDoc) {
+    return null;
+  }
+
+  userDoc.balance = userDoc.balance + funds;
+
+  await userDoc.save()
+
+  return new User(userDoc);
+}
+
+export const withdrawFunds = async (email : string, funds : number) => {
+
+  const userDoc = await UserModel.findOne({email : email});
+
+  if (!userDoc) {
+    return null;
+  }
+
+  if (userDoc.balance < funds) {
+    return null;
+  }
+
+  userDoc.balance = userDoc.balance - funds;
+
+  await userDoc.save()
 
   return new User(userDoc);
 }

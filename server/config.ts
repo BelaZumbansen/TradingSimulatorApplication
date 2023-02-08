@@ -6,6 +6,9 @@ const config = {
   app : {
     port: 3001,
   },
+  robo_trader : {
+    url: 'http://127.0.0.1:8000/',
+  },
   db : {
     uri: process.env.MONGODB_URI || ''
   },
